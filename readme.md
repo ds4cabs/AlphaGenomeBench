@@ -2,7 +2,7 @@
 
 # AlphaGenome Variant Effect Pipeline
 
-A batch pipeline for multi-modal variant effect prediction using [AlphaGenome](https://deepmind.google/research/publications/alphagenome/). Given a CSV of variants, the script predicts the effect of each variant on RNA-seq, chromatin accessibility (ATAC), CTCF binding, and histone modification (H3K27ac) in a specified cell type, and saves a figure for each variant.
+A batch pipeline for multi-modal variant effect prediction using [AlphaGenome]([https://deepmind.google/research/publications/alphagenome](https://deepmind.google/blog/alphagenome-ai-for-better-understanding-the-genome/). Given a CSV of variants, the script predicts the effect of each variant on RNA-seq, chromatin accessibility (ATAC), CTCF binding, and histone modification (H3K27ac) in a specified cell type, and saves a figure for each variant.
 
 ---
 
@@ -37,7 +37,7 @@ A template CSV (`variants_input.csv`) is included in this repository.
 ## Usage
 
 ```bash
-python alphagenome_variant_pipeline.py \
+python ./PATH_to_code/alphagenome_variant_pipeline.py \
     --csv variants_input.csv \
     --output_dir ./figures \
     --api_key YOUR_API_KEY
