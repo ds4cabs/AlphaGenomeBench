@@ -1,0 +1,5 @@
+gene_name,rsID,chr,position,ref_allele,alt_allele
+TBK1,rs149000064,chr12,64488488,GAATT,G
+TP53,rs28934578,chr17,7674220,G,A
+BRCA1,rs80357713,chr17,43071077,A,T
+APOE,rs429358,chr19,44908684,T,C

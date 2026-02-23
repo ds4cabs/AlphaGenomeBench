@@ -1,0 +1,5 @@
+gene_name,rsID,status,output
+TBK1,rs149000064,success,/dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline/TBK1_rs149000064_EFO_0001187_variant_effect.png
+TP53,rs28934578,success,/dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline/TP53_rs28934578_EFO_0001187_variant_effect.png
+BRCA1,rs80357713,success,/dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline/BRCA1_rs80357713_EFO_0001187_variant_effect.png
+APOE,rs429358,success,/dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline/APOE_rs429358_EFO_0001187_variant_effect.png
