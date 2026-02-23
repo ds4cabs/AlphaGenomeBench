@@ -66,4 +66,4 @@ Example figure for TBK1:
 
 ![TBK1 example](Plotting_RNA_ATAC_CTCF_H3K27ac/Figures/TBK1_rs149000064_EFO_0001187_variant_effect.png)
 
-> *(Add your own example figure to an `example/` folder to display here)*
+> *各位老师欢迎提出意见 More than happy to make changes*
