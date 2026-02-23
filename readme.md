@@ -2,7 +2,7 @@
 
 # AlphaGenome Variant Effect Pipeline
 
-A batch pipeline for multi-modal variant effect prediction using [AlphaGenome]([https://deepmind.google/research/publications/alphagenome](https://deepmind.google/blog/alphagenome-ai-for-better-understanding-the-genome/). Given a CSV of variants, the script predicts the effect of each variant on RNA-seq, chromatin accessibility (ATAC), CTCF binding, and histone modification (H3K27ac) in a specified cell type, and saves a figure for each variant.
+A batch pipeline for multi-modal variant effect prediction using [AlphaGenome](https://deepmind.google/blog/alphagenome-ai-for-better-understanding-the-genome/). Given a CSV of variants, the script predicts the effect of each variant on RNA-seq, chromatin accessibility (ATAC), CTCF binding, and histone modification (H3K27ac) in a specified cell type, and saves a figure for each variant.
 
 ---
 
