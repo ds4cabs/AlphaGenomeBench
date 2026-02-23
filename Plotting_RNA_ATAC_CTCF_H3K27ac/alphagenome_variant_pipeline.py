@@ -1,9 +1,9 @@
 """
 AlphaGenome Multi-Modal Variant Effect Prediction Pipeline
 ==========================================================
-Author  : Zechuan Shi, UC Irvine
+Author  : Zechuan Shi, Swarup Lab, UC Irvine
 Contact : zechuas@uci.edu
-Version : 1.0
+Version : 1.1
 
 Description:
     Batch variant effect prediction using the AlphaGenome model.
@@ -12,6 +12,7 @@ Description:
     figure per variant to the specified output directory.
 
 Usage:
+    # Optional arguments shown with their default values
     python ./PATH_to_code/alphagenome_variant_pipeline.py \
         --csv variants_input.csv \
         --output_dir ./figures \
@@ -35,12 +36,11 @@ Parameters:
                       Default is 32,768 bp (32 kb) centered on the variant.
                       This only affects what region is displayed in the plot,
                       not the prediction itself.
-
-
 """
 
 import os
 import argparse
+from datetime import datetime
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -50,6 +50,10 @@ import matplotlib.pyplot as plt
 from alphagenome.data import gene_annotation, genome, transcript as transcript_utils, track_data
 from alphagenome.models import dna_client
 from alphagenome.visualization import plot_components
+
+
+# Keywords that indicate a track is from a modified/non-wildtype condition
+MODIFIED_KEYWORDS = ['crispr', 'modified', 'insertion', 'deletion', 'mutant', 'knockout']
 
 
 # ---------------------------------------------------------------------------
@@ -78,11 +82,18 @@ def parse_args():
     )
     parser.add_argument(
         '--zoom', type=int, default=32768,
-        help='Zoom window size in bp for the final plot (default: 32768 = 32kb).'
+        help=(
+            'Sub-window (in bp) displayed in the saved figure (default: 32768 = 32 kb). '
+            'Does not affect prediction accuracy, only what region is shown in the plot.'
+        )
     )
     parser.add_argument(
         '--interval_size', type=int, default=1048576,
-        help='Full prediction interval size in bp (default: 1048576 = 1Mb).'
+        help=(
+            'Genomic window (in bp) centered on the variant, used as model input context '
+            '(default: 1048576 = 1 Mb). The model needs a large window for accuracy -- '
+            'only change if you have a specific reason.'
+        )
     )
     return parser.parse_args()
 
@@ -109,17 +120,62 @@ def load_annotation():
 # Track Helper Functions
 # ---------------------------------------------------------------------------
 
-def get_average_track(tdata):
-    """Average multiple replicates into a single track."""
-    if tdata.values.shape[1] <= 1:
-        return tdata
-    mean_values = tdata.values.mean(axis=1, keepdims=True)
-    return track_data.TrackData(
-        values=mean_values,
-        metadata=tdata.metadata.iloc[[0]].copy(),
-        interval=tdata.interval,
-        resolution=tdata.resolution,
+def is_modified(name):
+    """Return True if a track name contains any modified/non-wildtype keyword."""
+    name_lower = name.lower()
+    return any(kw in name_lower for kw in MODIFIED_KEYWORDS)
+
+
+def select_best_track(tdata):
+    """
+    Smart track selection logic:
+      - 1 track  → use as-is
+      - Multiple tracks, all identical names → average them (true replicates)
+      - Multiple tracks, different names     → prefer unmodified/wildtype tracks;
+                                               if none found, fall back to the first track
+    Returns (selected_tdata, log_lines) where log_lines is a list of strings
+    describing what was selected and why.
+    """
+    log_lines = []
+    n = tdata.values.shape[1]
+
+    if n == 1:
+        return tdata, log_lines
+
+    names = tdata.metadata['name'].tolist() if 'name' in tdata.metadata.columns else []
+
+    # Case: all names are identical → true replicates, average them
+    if len(set(names)) == 1:
+        log_lines.append(f"    → {n} identical tracks found — averaging as true replicates")
+        log_lines.append(f"    → Track: {names[0]}")
+        mean_values = tdata.values.mean(axis=1, keepdims=True)
+        averaged = track_data.TrackData(
+            values=mean_values,
+            metadata=tdata.metadata.iloc[[0]].copy(),
+            interval=tdata.interval,
+            resolution=tdata.resolution,
+        )
+        return averaged, log_lines
+
+    # Case: multiple tracks with different names → pick best unmodified one
+    log_lines.append(f"    [WARNING] {n} different tracks found — selecting wildtype/unmodified:")
+    for name in names:
+        tag = '[MODIFIED - skipped]' if is_modified(name) else '[wildtype]'
+        log_lines.append(f"      - {name}  {tag}")
+
+    unmodified_idx = [i for i, name in enumerate(names) if not is_modified(name)]
+
+    if unmodified_idx:
+        chosen_idx = unmodified_idx[0]
+        log_lines.append(f"    → Selected: {names[chosen_idx]}")
+    else:
+        chosen_idx = 0
+        log_lines.append(f"    [WARNING] No unmodified track found — falling back to: {names[0]}")
+
+    selected = tdata.filter_tracks(
+        [i == chosen_idx for i in range(n)]
     )
+    return selected, log_lines
 
 
 def filter_by_metadata(tracks, **filters):
@@ -144,24 +200,99 @@ def get_rna_track(tracks, rna_type='total'):
 
 
 # ---------------------------------------------------------------------------
+# Track Summary Builder
+# ---------------------------------------------------------------------------
+
+def build_track_summary(outputs, ontology, gene_name, rsid, variant):
+    """
+    Build a detailed track summary for a single variant as a list of strings,
+    and apply select_best_track() to choose the appropriate track for each modality.
+
+    Returns
+    -------
+    summary_lines : list of str
+    selected      : dict of label -> (ref_track, alt_track)
+    """
+    ref = outputs.reference
+    alt = outputs.alternate
+
+    sep  = '=' * 60
+    dash = chr(9472) * 60
+
+    lines = [
+        sep,
+        f"  Variant : {gene_name} | {rsid} | {variant}",
+        f"  Ontology: {ontology}",
+        dash,
+    ]
+
+    def process_pair(label, ref_tdata, alt_tdata):
+        """Select best track for ref and alt, log results."""
+        ref_selected, ref_log = select_best_track(ref_tdata)
+        alt_selected, _       = select_best_track(alt_tdata)  # alt mirrors ref logic
+        n = ref_tdata.values.shape[1]
+        names = ref_tdata.metadata['name'].tolist() if 'name' in ref_tdata.metadata.columns else []
+        name_str = ', '.join(names) if n <= 4 else ', '.join(names[:4]) + f' ... (+{n-4} more)'
+        lines.append(f"  {label:<30} {n:>3} track(s)   {name_str}")
+        lines.extend(ref_log)
+        return ref_selected, alt_selected
+
+    selected = {}
+
+    r, a = process_pair(
+        'RNA-seq (+) total',
+        get_rna_track(ref.rna_seq.filter_to_positive_strand(), 'total'),
+        get_rna_track(alt.rna_seq.filter_to_positive_strand(), 'total'),
+    )
+    selected['rna_tot_pos'] = (r, a)
+
+    r, a = process_pair(
+        'RNA-seq (-) total',
+        get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'total'),
+        get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'total'),
+    )
+    selected['rna_tot_neg'] = (r, a)
+
+    r, a = process_pair(
+        'RNA-seq (-) poly-A',
+        get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'poly'),
+        get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'poly'),
+    )
+    selected['rna_poly_neg'] = (r, a)
+
+    r, a = process_pair('ATAC', ref.atac, alt.atac)
+    selected['atac'] = (r, a)
+
+    r, a = process_pair(
+        'CHIP-TF (CTCF)',
+        filter_by_metadata(filter_by_ontology(ref.chip_tf, ontology), transcription_factor='CTCF'),
+        filter_by_metadata(filter_by_ontology(alt.chip_tf, ontology), transcription_factor='CTCF'),
+    )
+    selected['ctcf'] = (r, a)
+
+    r, a = process_pair(
+        'CHIP-Histone (H3K27ac)',
+        filter_by_metadata(filter_by_ontology(ref.chip_histone, ontology), histone_mark='H3K27ac'),
+        filter_by_metadata(filter_by_ontology(alt.chip_histone, ontology), histone_mark='H3K27ac'),
+    )
+    selected['h3k27ac'] = (r, a)
+
+    lines.append(dash)
+    lines.append('')
+
+    return lines, selected
+
+
+# ---------------------------------------------------------------------------
 # Core Prediction & Plotting for a Single Variant
 # ---------------------------------------------------------------------------
 
-def run_variant(variant, gene_name, rsid, model, extractor, ontology, interval_size, zoom, output_dir):
+def run_variant(variant, gene_name, rsid, model, extractor, ontology,
+                interval_size, zoom, output_dir):
     """
     Run the full prediction pipeline for a single variant and save the figure.
 
-    Parameters
-    ----------
-    variant     : genome.Variant
-    gene_name   : str
-    rsid        : str
-    model       : dna_client model handle
-    extractor   : TranscriptExtractor
-    ontology    : str  (e.g. 'EFO:0001187')
-    interval_size : int
-    zoom        : int
-    output_dir  : str
+    Returns (figure_path, summary_lines)
     """
     print(f"\n{'='*60}")
     print(f"Processing: {gene_name} | {rsid} | {variant}")
@@ -182,30 +313,19 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology, interval_s
         },
     )
 
-    ref = outputs.reference
-    alt = outputs.alternate
+    # --- Build track summary and select best tracks ---
+    summary_lines, selected = build_track_summary(
+        outputs, ontology, gene_name, rsid, variant
+    )
+    print('\n'.join(summary_lines))
 
-    # --- RNA-seq tracks ---
-    rna_tot_pos_ref = get_average_track(get_rna_track(ref.rna_seq.filter_to_positive_strand(), 'total'))
-    rna_tot_pos_alt = get_average_track(get_rna_track(alt.rna_seq.filter_to_positive_strand(), 'total'))
-    rna_tot_neg_ref = get_average_track(get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'total'))
-    rna_tot_neg_alt = get_average_track(get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'total'))
-    rna_poly_neg_ref = get_average_track(get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'poly'))
-    rna_poly_neg_alt = get_average_track(get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'poly'))
-
-    # --- Epigenetic tracks ---
-    # Filter to the requested cell type ontology first, then by mark/factor
-    ref_chip_tf_ont  = filter_by_ontology(ref.chip_tf,      ontology)
-    alt_chip_tf_ont  = filter_by_ontology(alt.chip_tf,      ontology)
-    ref_chip_his_ont = filter_by_ontology(ref.chip_histone, ontology)
-    alt_chip_his_ont = filter_by_ontology(alt.chip_histone, ontology)
-
-    atac_ref    = get_average_track(ref.atac)
-    atac_alt    = get_average_track(alt.atac)
-    ctcf_ref    = get_average_track(filter_by_metadata(ref_chip_tf_ont,  transcription_factor='CTCF'))
-    ctcf_alt    = get_average_track(filter_by_metadata(alt_chip_tf_ont,  transcription_factor='CTCF'))
-    h3k27ac_ref = get_average_track(filter_by_metadata(ref_chip_his_ont, histone_mark='H3K27ac'))
-    h3k27ac_alt = get_average_track(filter_by_metadata(alt_chip_his_ont, histone_mark='H3K27ac'))
+    # --- Unpack selected tracks ---
+    rna_tot_pos_ref,  rna_tot_pos_alt  = selected['rna_tot_pos']
+    rna_tot_neg_ref,  rna_tot_neg_alt  = selected['rna_tot_neg']
+    rna_poly_neg_ref, rna_poly_neg_alt = selected['rna_poly_neg']
+    atac_ref,         atac_alt         = selected['atac']
+    ctcf_ref,         ctcf_alt         = selected['ctcf']
+    h3k27ac_ref,      h3k27ac_alt      = selected['h3k27ac']
 
     # --- Transcript annotation ---
     transcripts = extractor.extract(interval)
@@ -262,7 +382,8 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology, interval_s
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
-    return save_path
+
+    return save_path, summary_lines
 
 
 # ---------------------------------------------------------------------------
@@ -285,9 +406,8 @@ def load_variants_csv(csv_path):
             f"Found: {set(df.columns)}"
         )
 
-    # Basic type coercion
-    df['position'] = df['position'].astype(int)
-    df['chr'] = df['chr'].astype(str).str.strip()
+    df['position']   = df['position'].astype(int)
+    df['chr']        = df['chr'].astype(str).str.strip()
     df['ref_allele'] = df['ref_allele'].astype(str).str.strip()
     df['alt_allele'] = df['alt_allele'].astype(str).str.strip()
 
@@ -300,24 +420,41 @@ def load_variants_csv(csv_path):
 # ---------------------------------------------------------------------------
 
 def main():
-    args = parse_args()
+    args   = parse_args()
+    run_ts = datetime.now().strftime('%Y%m%d_%H%M%S')   # e.g. 20250222_143501
+    run_dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # Validate output directory
     os.makedirs(args.output_dir, exist_ok=True)
-    print(f"Output directory: {os.path.abspath(args.output_dir)}")
+    print(f"Output directory : {os.path.abspath(args.output_dir)}")
+    print(f"Run timestamp    : {run_dt}")
 
     # Load variants from CSV
     variants = load_variants_csv(args.csv)
 
     # Initialize model and annotation (once, shared)
     print("\nInitializing AlphaGenome model...")
-    model = dna_client.create(args.api_key)
-
+    model     = dna_client.create(args.api_key)
     extractor = load_annotation()
 
-    # Process each variant
+    # Header block written once at the top of the combined summary file
+    all_summary_lines = [
+        '=' * 60,
+        'AlphaGenome Variant Pipeline — Track Summary',
+        '=' * 60,
+        f"Run timestamp    : {run_dt}",
+        f"Input CSV        : {os.path.abspath(args.csv)}",
+        f"Output directory : {os.path.abspath(args.output_dir)}",
+        f"Ontology         : {args.ontology}",
+        f"Interval size    : {args.interval_size:,} bp  (model input context window)",
+        f"Zoom             : {args.zoom:,} bp  (display window in figures)",
+        f"Total variants   : {len(variants)}",
+        '=' * 60,
+        '',
+    ]
+
     results = []
-    errors = []
+    errors  = []
 
     for i, row in enumerate(variants, start=1):
         gene_name = row['gene_name']
@@ -334,7 +471,7 @@ def main():
                 reference_bases=ref,
                 alternate_bases=alt,
             )
-            out_path = run_variant(
+            out_path, summary_lines = run_variant(
                 variant=variant,
                 gene_name=gene_name,
                 rsid=rsid,
@@ -345,28 +482,49 @@ def main():
                 zoom=args.zoom,
                 output_dir=args.output_dir,
             )
-            results.append({'gene_name': gene_name, 'rsID': rsid, 'status': 'success', 'output': out_path})
+            all_summary_lines.extend(summary_lines)
+            results.append({
+                'gene_name': gene_name, 'rsID': rsid,
+                'status': 'success', 'output': out_path,
+            })
 
         except Exception as e:
             print(f"  ERROR processing {gene_name} ({rsid}): {e}")
-            errors.append({'gene_name': gene_name, 'rsID': rsid, 'status': 'error', 'message': str(e)})
+            all_summary_lines.extend([
+                '=' * 60,
+                f"  Variant : {gene_name} | {rsid}",
+                f"  STATUS  : ERROR — {e}",
+                '=' * 60,
+                '',
+            ])
+            errors.append({
+                'gene_name': gene_name, 'rsID': rsid,
+                'status': 'error', 'message': str(e),
+            })
 
-    # --- Summary ---
+    # --- Write combined track summary file ---
+    summary_txt_path = os.path.join(args.output_dir, f'track_summary_{run_ts}.txt')
+    with open(summary_txt_path, 'w') as f:
+        f.write('\n'.join(all_summary_lines))
+    print(f"\nTrack summary saved : {summary_txt_path}")
+
+    # --- Write pipeline run summary CSV ---
+    summary_csv_path = os.path.join(args.output_dir, f'pipeline_summary_{run_ts}.csv')
+    pd.DataFrame(results + errors).to_csv(summary_csv_path, index=False)
+
+    # --- Print final report ---
     print(f"\n{'='*60}")
-    print(f"PIPELINE COMPLETE")
-    print(f"  Success : {len(results)}")
-    print(f"  Errors  : {len(errors)}")
-    print(f"  Figures saved to: {os.path.abspath(args.output_dir)}")
+    print(f"PIPELINE COMPLETE  [{run_dt}]")
+    print(f"  Success       : {len(results)}")
+    print(f"  Errors        : {len(errors)}")
+    print(f"  Figures       : {os.path.abspath(args.output_dir)}")
+    print(f"  Track summary : {summary_txt_path}")
+    print(f"  Run summary   : {summary_csv_path}")
 
     if errors:
         print("\nFailed variants:")
         for e in errors:
             print(f"  - {e['gene_name']} ({e['rsID']}): {e['message']}")
-
-    # Optionally save a run summary CSV
-    summary_path = os.path.join(args.output_dir, 'pipeline_summary.csv')
-    pd.DataFrame(results + errors).to_csv(summary_path, index=False)
-    print(f"\nRun summary: {summary_path}")
 
 
 if __name__ == '__main__':
