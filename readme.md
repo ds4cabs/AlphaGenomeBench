@@ -43,6 +43,43 @@ python ./PATH_to_code/alphagenome_variant_pipeline.py \
     --api_key YOUR_API_KEY
 ```
 
+Code Running: 
+```
+Output directory: /dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline
+Loaded 4 variant(s) from variants_input.csv
+
+Initializing AlphaGenome model...
+Loading GTF annotation (this may take a moment on first run)...
+Annotation loaded.
+
+============================================================
+Processing: TBK1 | rs149000064 | chr12:64488488:GAATT>G
+============================================================
+Saved: /alphagenome/Test/autopiepline/TBK1_rs149000064_EFO_0001187_variant_effect.png
+
+============================================================
+Processing: TP53 | rs28934578 | chr17:7674220:G>A
+============================================================
+Saved: /alphagenome/Test/TP53_rs28934578_EFO_0001187_variant_effect.png
+
+============================================================
+Processing: BRCA1 | rs80357713 | chr17:43071077:A>T
+============================================================
+Saved: /alphagenome/Test/BRCA1_rs80357713_EFO_0001187_variant_effect.png
+
+============================================================
+Processing: APOE | rs429358 | chr19:44908684:T>C
+============================================================
+Saved: /alphagenome/Test/APOE_rs429358_EFO_0001187_variant_effect.png
+
+============================================================
+PIPELINE COMPLETE
+  Success : 4
+  Errors  : 0
+  Figures saved to: /alphagenome/Test/autopiepline
+
+```
+
 ### All Arguments
 
 | Argument | Required | Default | Description |
