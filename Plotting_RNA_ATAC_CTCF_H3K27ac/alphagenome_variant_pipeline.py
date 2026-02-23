@@ -1,19 +1,42 @@
 """
 AlphaGenome Multi-Modal Variant Effect Prediction Pipeline
 ==========================================================
+Author  : Zechuan Shi, UC Irvine
+Contact : zechuas@uci.edu
+Version : 1.0
+
+Description:
+    Batch variant effect prediction using the AlphaGenome model.
+    Given a CSV of variants, this script runs multi-modal predictions
+    (RNA-seq, ATAC, CTCF, H3K27ac) for each variant and saves a
+    figure per variant to the specified output directory.
+
 Usage:
-    python alphagenome_variant_pipeline.py \
+    python ./PATH_to_code/alphagenome_variant_pipeline.py \
         --csv variants_input.csv \
         --output_dir ./figures \
         --api_key YOUR_API_KEY \
         [--ontology EFO:0001187] \
-        [--zoom 32768]
+        [--zoom 32768] \
+        [--interval_size 1048576]
 
 CSV Format (required columns):
     gene_name, rsID, chr, position, ref_allele, alt_allele
-
-Optional CSV columns (ignored if present):
     Any extra columns are ignored safely.
+
+Parameters:
+    --interval_size : The genomic window (in bp) centered on the variant
+                      that is fed to the model for prediction.
+                      The model requires a large context window to make
+                      accurate predictions — default is 1,048,576 bp (1 Mb).
+                      Do not reduce this unless you have a specific reason.
+
+    --zoom          : The sub-window (in bp) shown in the saved figure.
+                      Default is 32,768 bp (32 kb) centered on the variant.
+                      This only affects what region is displayed in the plot,
+                      not the prediction itself.
+
+
 """
 
 import os
