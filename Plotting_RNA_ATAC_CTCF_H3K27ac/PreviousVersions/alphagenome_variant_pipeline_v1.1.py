@@ -3,7 +3,7 @@ AlphaGenome Multi-Modal Variant Effect Prediction Pipeline
 ==========================================================
 Author  : Zechuan Shi, Swarup Lab, UC Irvine
 Contact : zechuas@uci.edu
-Version : 1.1.1
+Version : 1.1
 
 Description:
     Batch variant effect prediction using the AlphaGenome model.
@@ -129,15 +129,13 @@ def is_modified(name):
 def select_best_track(tdata):
     """
     Smart track selection logic:
-      - 0 tracks → return safely (prevents index errors)
       - 1 track  → use as-is
-      - Multiple tracks, all identical names → average them (replicates)
-      - Multiple tracks, different names     → prefer unmodified/wildtype tracks
+      - Multiple tracks, all identical names → average them (true replicates)
+      - Multiple tracks, different names     → prefer unmodified/wildtype tracks;
+                                               if none found, fall back to the first track
+    Returns (selected_tdata, log_lines) where log_lines is a list of strings
+    describing what was selected and why.
     """
-    # SAFETY CHECK: If the track data is empty, return immediately
-    if tdata.values.shape[1] == 0:
-        return tdata, ["    → No tracks found for this modality."]
-
     log_lines = []
     n = tdata.values.shape[1]
 
@@ -179,80 +177,27 @@ def select_best_track(tdata):
     )
     return selected, log_lines
 
-# def filter_by_metadata(tracks, **filters):
-#     """Filter tracks by arbitrary metadata column key=value pairs."""
-#     mask = pd.Series([True] * len(tracks.metadata), index=tracks.metadata.index)
-#     for key, value in filters.items():
-#         if key in tracks.metadata.columns:
-#             mask &= (tracks.metadata[key] == value)
-#     return tracks.filter_tracks(mask.values)
-#
-# #
-def filter_by_metadata(tracks, **filters):
-    """Filter tracks safely, even if metadata is empty or columns are missing."""
-    if tracks.metadata.empty:
-        return tracks
 
+def filter_by_metadata(tracks, **filters):
+    """Filter tracks by arbitrary metadata column key=value pairs."""
     mask = pd.Series([True] * len(tracks.metadata), index=tracks.metadata.index)
     for key, value in filters.items():
         if key in tracks.metadata.columns:
             mask &= (tracks.metadata[key] == value)
-        else:
-            # If the specific column is missing, we don't apply the filter
-            print(f"  Note: Metadata column '{key}' not found. Skipping filter.")
     return tracks.filter_tracks(mask.values)
-#
 
-# def filter_by_ontology(tracks, ontology_curie):
-#     """Filter tracks to a specific cell type ontology."""
-#     mask = tracks.metadata['ontology_curie'] == ontology_curie
-#     return tracks.filter_tracks(mask.values)
+
 def filter_by_ontology(tracks, ontology_curie):
-    """Specific check for ontology in both 'ontology_curie' and 'name' columns."""
-    if tracks.metadata.empty:
-        return tracks
-
-    # Check common columns where ontology might be stored
-    for col in ['ontology_curie', 'name']:
-        if col in tracks.metadata.columns:
-            mask = tracks.metadata[col].str.contains(ontology_curie, case=False)
-            return tracks.filter_tracks(mask.values)
-
-    print(f"  Warning: No ontology info found in metadata columns.")
-    return tracks
+    """Filter tracks to a specific cell type ontology."""
+    mask = tracks.metadata['ontology_curie'] == ontology_curie
+    return tracks.filter_tracks(mask.values)
 
 
-
-
-# def get_rna_track(tracks, rna_type='total'):
-#     """Filter RNA-seq tracks by type keyword (e.g. 'total', 'poly')."""
-#     mask = tracks.metadata['name'].str.contains(rna_type, case=False)
-#     return tracks.filter_tracks(mask.values)
-
-# def get_rna_track(tracks, rna_type='total'):
-#     """Filter RNA-seq tracks by type keyword safely."""
-#     # If no tracks were returned by the API, return as-is
-#     if tracks.metadata.empty:
-#         return tracks
-#     # Check if 'name' column exists before string filtering
-#     if 'name' in tracks.metadata.columns:
-#         mask = tracks.metadata['name'].str.contains(rna_type, case=False)
-#         return tracks.filter_tracks(mask.values)
-#     return tracks
 def get_rna_track(tracks, rna_type='total'):
-    """Filter RNA-seq tracks by type keyword safely."""
-    # 1. Safety check: Handle None (if model output is missing) or empty metadata
-    if tracks is None or tracks.metadata.empty:
-        return tracks
+    """Filter RNA-seq tracks by type keyword (e.g. 'total', 'poly')."""
+    mask = tracks.metadata['name'].str.contains(rna_type, case=False)
+    return tracks.filter_tracks(mask.values)
 
-    # 2. Check if 'name' column exists before string filtering
-    if 'name' in tracks.metadata.columns:
-        # 3. Use na=False to handle cases where names might be missing (NaN)
-        # This prevents the filter from crashing on unexpected data gaps
-        mask = tracks.metadata['name'].str.contains(rna_type, case=False, na=False)
-        return tracks.filter_tracks(mask.values)
-
-    return tracks
 
 # ---------------------------------------------------------------------------
 # Track Summary Builder
@@ -308,23 +253,12 @@ def build_track_summary(outputs, ontology, gene_name, rsid, variant):
     )
     selected['rna_tot_neg'] = (r, a)
 
-    # r, a = process_pair(
-    #     'RNA-seq (-) poly-A',
-    #     get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'poly'),
-    #     get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'poly'),
-    # )
-    # selected['rna_poly_neg'] = (r, a)
-    # 3. Poly-A RNA (Flexible Strand for Brain/GTEx compatibility)
-    r_poly = get_rna_track(ref.rna_seq, 'poly')
-    a_poly = get_rna_track(alt.rna_seq, 'poly')
-
     r, a = process_pair(
-        'RNA-seq poly-A',
-        r_poly,
-        a_poly
+        'RNA-seq (-) poly-A',
+        get_rna_track(ref.rna_seq.filter_to_negative_strand(), 'poly'),
+        get_rna_track(alt.rna_seq.filter_to_negative_strand(), 'poly'),
     )
-    selected['rna_poly_neg'] = (r, a)  # Keep the key 'rna_poly_neg' so the plotting code doesn't need to change
-
+    selected['rna_poly_neg'] = (r, a)
 
     r, a = process_pair('ATAC', ref.atac, alt.atac)
     selected['atac'] = (r, a)
@@ -347,6 +281,68 @@ def build_track_summary(outputs, ontology, gene_name, rsid, variant):
     lines.append('')
 
     return lines, selected
+
+# ---------------------------------------------------------------------------
+# Extracts numerical data for Gene Expression (RNA) and Local Accessibility/Binding (ATAC/TF/Histone).
+# ---------------------------------------------------------------------------
+
+def extract_variant_data(outputs, interval, variant, extractor):
+    """
+    Extracts numerical data for Gene Expression (RNA) and
+    Local Accessibility/Binding (ATAC/TF/Histone).
+    """
+# Extraction Function
+    results = []
+
+    # --- RNA-seq Extraction ---
+    if hasattr(outputs.reference, 'rna_seq') and outputs.reference.rna_seq is not None:
+        print("Processing RNA-seq genes...")
+        transcripts = extractor.extract(interval)
+        unique_genes = {t.info['gene_name']: t for t in transcripts}.values()
+
+        for gene in unique_genes:
+            ref_all = outputs.reference.rna_seq
+            alt_all = outputs.alternate.rna_seq
+
+            ref_tracks = ref_all.filter_to_negative_strand() if gene.strand == '-' else ref_all.filter_to_positive_strand()
+            alt_tracks = alt_all.filter_to_negative_strand() if gene.strand == '-' else alt_all.filter_to_positive_strand()
+
+            def get_gene_sum(tdata, gene_interval):
+                if tdata.values.size == 0:
+                    return 0.0
+                subset = tdata.slice_by_interval(gene_interval) # slice(gene_interval)
+                return subset.values.sum(axis=0).mean()
+
+            ref_val = get_gene_sum(ref_tracks, gene.transcript_interval)
+            alt_val = get_gene_sum(alt_tracks, gene.transcript_interval)
+
+            results.append({
+                'gene': gene.info['gene_name'],
+                'type': 'RNA-seq',
+                'REF_signal': ref_val,
+                'ALT_signal': alt_val,
+                'Log2FC': np.log2((alt_val + 1e-6) / (ref_val + 1e-6))
+            })
+
+    # --- Local SNP Impact ---
+    snp_window = variant.reference_interval.resize(50)
+    for name, attr in [('ATAC', 'atac'), ('CTCF', 'chip_tf'), ('H3K27ac', 'chip_histone')]:
+        ref_data = getattr(outputs.reference, attr, None)
+        alt_data = getattr(outputs.alternate, attr, None)
+
+        if ref_data is not None and ref_data.values.size > 0:
+            ref_local = ref_data.slice(snp_window).values.mean()
+            alt_local = alt_data.slice(snp_window).values.mean()
+            results.append({
+                'gene': 'SNP_LOCUS',
+                'type': name,
+                'REF_signal': ref_local,
+                'ALT_signal': alt_local,
+                'Log2FC': np.log2((alt_local + 1e-6) / (ref_local + 1e-6))
+            })
+
+    return pd.DataFrame(results)
+
 
 
 # ---------------------------------------------------------------------------
@@ -396,94 +392,40 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
     # --- Transcript annotation ---
     transcripts = extractor.extract(interval)
 
-    # # NOTE : modify the run_variant function.
-    # # Currently, your script assumes every data type (RNA, ATAC, ChIP) is always available,
-    # # which causes it to crash when a tissue like Brain is missing those specific tracks.
-    # # --- Assemble plot components ---
-    # components = [
-    #     plot_components.TranscriptAnnotation(transcripts),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': rna_tot_pos_ref, 'ALT': rna_tot_pos_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'red'},
-    #         ylabel_template='Total RNA (+)',
-    #     ),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': rna_tot_neg_ref, 'ALT': rna_tot_neg_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'red'},
-    #         ylabel_template='Total RNA (-)',
-    #     ),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': rna_poly_neg_ref, 'ALT': rna_poly_neg_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'gold'},
-    #         ylabel_template='Poly-A RNA (-)',
-    #     ),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': atac_ref, 'ALT': atac_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'blue'},
-    #         ylabel_template='ATAC',
-    #     ),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': ctcf_ref, 'ALT': ctcf_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'orange'},
-    #         ylabel_template='CTCF',
-    #     ),
-    #     plot_components.OverlaidTracks(
-    #         tdata={'REF': h3k27ac_ref, 'ALT': h3k27ac_alt},
-    #         colors={'REF': 'dimgrey', 'ALT': 'cyan'},
-    #         ylabel_template='H3K27ac',
-    #     ),
-    # ]
     # --- Assemble plot components ---
-    # Start with the transcript annotation (always present)
-    components = [plot_components.TranscriptAnnotation(transcripts)]
-
-    # Add RNA Total (+) track if data exists
-    if not rna_tot_pos_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+    components = [
+        plot_components.TranscriptAnnotation(transcripts),
+        plot_components.OverlaidTracks(
             tdata={'REF': rna_tot_pos_ref, 'ALT': rna_tot_pos_alt},
             colors={'REF': 'dimgrey', 'ALT': 'red'},
             ylabel_template='Total RNA (+)',
-        ))
-
-    # Add RNA Total (-) track if data exists
-    if not rna_tot_neg_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+        ),
+        plot_components.OverlaidTracks(
             tdata={'REF': rna_tot_neg_ref, 'ALT': rna_tot_neg_alt},
             colors={'REF': 'dimgrey', 'ALT': 'red'},
             ylabel_template='Total RNA (-)',
-        ))
-
-    # Add RNA Poly-A track if data exists
-    if not rna_poly_neg_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+        ),
+        plot_components.OverlaidTracks(
             tdata={'REF': rna_poly_neg_ref, 'ALT': rna_poly_neg_alt},
             colors={'REF': 'dimgrey', 'ALT': 'gold'},
             ylabel_template='Poly-A RNA (-)',
-        ))
-
-    # Add ATAC track if data exists
-    if not atac_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+        ),
+        plot_components.OverlaidTracks(
             tdata={'REF': atac_ref, 'ALT': atac_alt},
             colors={'REF': 'dimgrey', 'ALT': 'blue'},
             ylabel_template='ATAC',
-        ))
-
-    # Add CTCF track if data exists
-    if not ctcf_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+        ),
+        plot_components.OverlaidTracks(
             tdata={'REF': ctcf_ref, 'ALT': ctcf_alt},
             colors={'REF': 'dimgrey', 'ALT': 'orange'},
             ylabel_template='CTCF',
-        ))
-
-    # Add H3K27ac track if data exists
-    if not h3k27ac_ref.metadata.empty:
-        components.append(plot_components.OverlaidTracks(
+        ),
+        plot_components.OverlaidTracks(
             tdata={'REF': h3k27ac_ref, 'ALT': h3k27ac_alt},
             colors={'REF': 'dimgrey', 'ALT': 'cyan'},
             ylabel_template='H3K27ac',
-        ))
+        ),
+    ]
 
     cell_label = ontology.replace(':', '_')
     title = f"{gene_name} ({rsid}) — Multi-Modal Variant Effect [{cell_label}]"
@@ -502,6 +444,19 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
+
+
+    # --- ADDED: NUMERICAL EXTRACTION ---
+    print(f"Extracting numerical values for {gene_name}...")
+    # interval = variant.reference_interval.resize(interval_size) # # redundant, already set on line 363
+    df_values = extract_variant_data(outputs, interval, variant, extractor)
+
+    # Save the CSV next to your figure
+    csv_name = f"{gene_name}_{rsid}_{ontology.replace(':', '_')}_values.csv"
+    csv_path = os.path.join(output_dir, csv_name)
+    df_values.to_csv(csv_path, index=False)
+    print(f"Saved numerical data: {csv_path}")
+
 
     return save_path, summary_lines
 

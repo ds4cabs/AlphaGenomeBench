@@ -40,6 +40,7 @@ A template CSV (`variants_input.csv`) is included in this repository.
 python ./PATH_to_code/alphagenome_variant_pipeline.py \
     --csv variants_input.csv \
     --output_dir ./alphagenome/figures \
+    --ontology EFO:0001187 \
     --api_key YOUR_API_KEY
 ```
 
