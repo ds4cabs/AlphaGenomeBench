@@ -3,7 +3,7 @@ AlphaGenome Multi-Modal Variant Effect Prediction Pipeline
 ==========================================================
 Author  : Zechuan Shi, Swarup Lab, UC Irvine
 Contact : zechuas@uci.edu
-Version : 1.1.1
+Version : 1.1.3
 
 Description:
     Batch variant effect prediction using the AlphaGenome model.
@@ -112,6 +112,7 @@ def load_annotation():
     gtf = pd.read_feather(gtf_url)
     gtf_mane = gene_annotation.filter_to_mane_select_transcript(gtf)
     extractor = transcript_utils.TranscriptExtractor(gtf_mane)
+    extractor.gtf = gtf_mane  # Attach the dataframe for easy access later
     print("Annotation loaded.")
     return extractor
 
@@ -348,6 +349,79 @@ def build_track_summary(outputs, ontology, gene_name, rsid, variant):
 
     return lines, selected
 
+# ---------------------------------------------------------------------------
+# Quantification Function - Gene expression only
+# ---------------------------------------------------------------------------
+
+def quantify_gene_expression(outputs, interval, gtf_mane):
+    """
+    Calculates signal for every transcript (isoform) in the 1Mb window
+    and returns both the transcript-level and gene-level summaries.
+    """
+    interval_start = interval.start
+    interval_end = interval.end
+
+    # 1. Filter GTF to find all features within this window
+    genes_in_window = gtf_mane[
+        (gtf_mane['Chromosome'] == interval.chromosome) &
+        (gtf_mane['Start'] < interval_end) &
+        (gtf_mane['End'] > interval_start)
+    ].copy()
+
+    gene_results = []
+
+    # Use Column 2 (Poly-A RNA-seq) for mature mRNA
+    ref_values = outputs.reference.rna_seq.values[:, 2]
+    alt_values = outputs.alternate.rna_seq.values[:, 2]
+
+    for _, entry in genes_in_window.iterrows():
+        # 2. Map genomic coordinates to array indices
+        rel_start = int(max(0, entry['Start'] - interval_start))
+        rel_end = int(min(len(ref_values), entry['End'] - interval_start))
+
+        # 3. Sum signal across the transcript body
+        ref_sum = ref_values[rel_start:rel_end].sum()
+        alt_sum = alt_values[rel_start:rel_end].sum()
+
+        # 4. Calculate Log2 Fold Change
+        if ref_sum > 0 and alt_sum > 0:
+            log2fc = np.log2(alt_sum / ref_sum)
+        else:
+            log2fc = 0.0
+
+        # Capture transcript-level detail (ISOFORMS)
+        gene_results.append({
+            'gene_name': entry['gene_name'],
+            'transcript_id': entry.get('transcript_id', 'N/A'), # Keep isoform info
+            'gene_type': entry['gene_type'],
+            'Start': entry['Start'],
+            'End': entry['End'],
+            'REF_sum': round(float(ref_sum), 2),
+            'ALT_sum': round(float(alt_sum), 2),
+            'log2FC': round(float(log2fc), 6)
+        })
+
+    # VERSION 1: The Detailed Table (Isoforms)
+    isoform_df = pd.DataFrame(gene_results)
+
+    # VERSION 2: The Grouped Table (One row per Gene)
+    gene_summary = isoform_df.groupby(['gene_name', 'gene_type']).agg({
+        'REF_sum': 'sum',
+        'ALT_sum': 'sum'
+    }).reset_index()
+
+    # Re-calculate Log2FC for the whole gene
+    def calc_log2fc(row):
+        if row['REF_sum'] > 0 and row['ALT_sum'] > 0:
+            return np.log2(row['ALT_sum'] / row['REF_sum'])
+        return 0.0
+
+    gene_summary['log2FC'] = gene_summary.apply(calc_log2fc, axis=1)
+
+    # Return BOTH versions to the main script
+    return gene_summary, isoform_df
+
+
 
 # ---------------------------------------------------------------------------
 # Core Prediction & Plotting for a Single Variant
@@ -395,6 +469,37 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
 
     # --- Transcript annotation ---
     transcripts = extractor.extract(interval)
+
+    # # --- NEW v1.1.2: Gene Expression Quantification ---
+    # # We use extractor.gtf which is the filtered MANE gtf loaded at start
+    # quant_df = quantify_gene_expression(outputs, interval, extractor.gtf)
+    #
+    # # Save the quantification table
+    # cell_label = ontology.replace(':', '_')
+    # quant_csv_name = f"{gene_name}_{rsid}_{cell_label}_quantification.csv"
+    # quant_path = os.path.join(output_dir, quant_csv_name)
+    # quant_df.sort_values('REF_sum', ascending=False).to_csv(quant_path, index=False)
+    # print(f"Quantification saved: {quant_path}")
+
+    # --- NEW v1.1.3: Gene & Isoform Expression Quantification ---
+    # Unpack both the Gene-level and Transcript-level DataFrames
+    gene_df, isoform_df = quantify_gene_expression(outputs, interval, extractor.gtf)
+
+    # Save the Gene Summary (Grouped)
+    cell_label = ontology.replace(':', '_')
+    gene_csv_name = f"{gene_name}_{rsid}_{cell_label}_GENE_summary.csv"
+    gene_path = os.path.join(output_dir, gene_csv_name)
+    gene_df.sort_values('REF_sum', ascending=False).to_csv(gene_path, index=False)
+
+    # Save the Isoform Details (Individual transcripts)
+    iso_csv_name = f"{gene_name}_{rsid}_{cell_label}_ISOFORM_details.csv"
+    iso_path = os.path.join(output_dir, iso_csv_name)
+    isoform_df.sort_values('REF_sum', ascending=False).to_csv(iso_path, index=False)
+
+    print(f"Quantification saved:")
+    print(f"  → Gene level: {gene_path}")
+    print(f"  → Isoform level: {iso_path}")
+
 
     # # NOTE : modify the run_variant function.
     # # Currently, your script assumes every data type (RNA, ATAC, ChIP) is always available,
@@ -503,7 +608,7 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
     plt.close()
     print(f"Saved: {save_path}")
 
-    return save_path, summary_lines
+    return save_path, summary_lines, gene_df, isoform_df  # v1.1.3 -- Add gene_df and isoform_df here
 
 
 # ---------------------------------------------------------------------------
@@ -591,7 +696,27 @@ def main():
                 reference_bases=ref,
                 alternate_bases=alt,
             )
-            out_path, summary_lines = run_variant(
+            # # v1.1.2
+            # out_path, summary_lines = run_variant(
+            #     variant=variant,
+            #     gene_name=gene_name,
+            #     rsid=rsid,
+            #     model=model,
+            #     extractor=extractor,
+            #     ontology=args.ontology,
+            #     interval_size=args.interval_size,
+            #     zoom=args.zoom,
+            #     output_dir=args.output_dir,
+            # )
+            # all_summary_lines.extend(summary_lines)
+            # results.append({
+            #     'gene_name': gene_name, 'rsID': rsid,
+            #     'status': 'success', 'output': out_path,
+            # })
+
+            # # v1.1.3
+            # Unpack all 4 returned objects
+            out_path, summary_lines, gene_df, isoform_df = run_variant(
                 variant=variant,
                 gene_name=gene_name,
                 rsid=rsid,
@@ -603,9 +728,20 @@ def main():
                 output_dir=args.output_dir,
             )
             all_summary_lines.extend(summary_lines)
+
+            # Identify the "Top Hit" from the gene-level results
+            top_hit = gene_df.iloc[gene_df['log2FC'].abs().argmax()]
+
             results.append({
-                'gene_name': gene_name, 'rsID': rsid,
-                'status': 'success', 'output': out_path,
+                'gene_name': gene_name,
+                'rsID': rsid,
+                'chr': chrom,
+                'pos': position,
+                'top_affected_gene': top_hit['gene_name'],
+                'max_log2FC': round(float(top_hit['log2FC']), 4),
+                'ref_signal': round(float(top_hit['REF_sum']), 2),
+                'status': 'success',
+                'output_figure': out_path,
             })
 
         except Exception as e:
