@@ -3,7 +3,7 @@ AlphaGenome Multi-Modal Variant Effect Prediction Pipeline
 ==========================================================
 Author  : Zechuan Shi, Swarup Lab, UC Irvine
 Contact : zechuas@uci.edu
-Version : 1.1.3
+Version : 1.1.5
 
 Description:
     Batch variant effect prediction using the AlphaGenome model.
@@ -355,8 +355,8 @@ def build_track_summary(outputs, ontology, gene_name, rsid, variant):
 
 def quantify_gene_expression(outputs, interval, gtf_mane):
     """
-    Calculates signal for every transcript (isoform) in the 1Mb window
-    and returns both the transcript-level and gene-level summaries.
+    Calculates signal for every transcript in the 1Mb window
+    and returns both the transcript/gene-level summaries.
     """
     interval_start = interval.start
     interval_end = interval.end
@@ -367,6 +367,10 @@ def quantify_gene_expression(outputs, interval, gtf_mane):
         (gtf_mane['Start'] < interval_end) &
         (gtf_mane['End'] > interval_start)
     ].copy()
+
+    # This ensures you only have one row per unique transcript_id
+    if 'Feature' in genes_in_window.columns:
+        genes_in_window = genes_in_window[genes_in_window['Feature'] == 'transcript']
 
     gene_results = []
 
@@ -392,7 +396,7 @@ def quantify_gene_expression(outputs, interval, gtf_mane):
         # Capture transcript-level detail (ISOFORMS)
         gene_results.append({
             'gene_name': entry['gene_name'],
-            'transcript_id': entry.get('transcript_id', 'N/A'), # Keep isoform info
+            'transcript_id': entry.get('transcript_id', 'N/A'), # Keep transcript_id info
             'gene_type': entry['gene_type'],
             'Start': entry['Start'],
             'End': entry['End'],
@@ -402,25 +406,42 @@ def quantify_gene_expression(outputs, interval, gtf_mane):
         })
 
     # VERSION 1: The Detailed Table (Isoforms)
-    isoform_df = pd.DataFrame(gene_results)
+    isoform_df = pd.DataFrame(gene_results) ### NOTE let's just keep this for now, in case we will need to deal with isoform later, but now isoform in this RNA-seq
 
-    # VERSION 2: The Grouped Table (One row per Gene)
+    # # VERSION 2: The Grouped Table (One row per Gene)
+    # gene_summary = isoform_df.groupby(['gene_name', 'gene_type']).agg({
+    #     'REF_sum': 'sum',
+    #     'ALT_sum': 'sum'
+    # }).reset_index()
+
+    # --- GROUPING TO GENE LEVEL ---
+    # We aggregate to keep all your requested columns
     gene_summary = isoform_df.groupby(['gene_name', 'gene_type']).agg({
-        'REF_sum': 'sum',
-        'ALT_sum': 'sum'
+        'transcript_id': 'first', # Keeps the primary transcript ID
+        'Start': 'min',           # Smallest start site
+        'End': 'max',             # Largest end site
+        'REF_sum': 'sum',         # Total signal
+        'ALT_sum': 'sum'          # Total signal
     }).reset_index()
 
-    # Re-calculate Log2FC for the whole gene
-    def calc_log2fc(row):
-        if row['REF_sum'] > 0 and row['ALT_sum'] > 0:
-            return np.log2(row['ALT_sum'] / row['REF_sum'])
-        return 0.0
+    # Final recalculation of log2FC for the whole gene
+    gene_summary['log2FC'] = gene_summary.apply(
+        lambda x: round(np.log2(x['ALT_sum']/x['REF_sum']), 6) if (x['REF_sum'] > 0 and x['ALT_sum'] > 0) else 0.0,
+        axis=1
+    )
 
-    gene_summary['log2FC'] = gene_summary.apply(calc_log2fc, axis=1)
+    return gene_summary
 
-    # Return BOTH versions to the main script
-    return gene_summary, isoform_df
+    # # Re-calculate Log2FC for the whole gene
+    # def calc_log2fc(row):
+    #     if row['REF_sum'] > 0 and row['ALT_sum'] > 0:
+    #         return np.log2(row['ALT_sum'] / row['REF_sum'])
+    #     return 0.0
+    #
+    # gene_summary['log2FC'] = gene_summary.apply(calc_log2fc, axis=1)
 
+    # # Return BOTH versions to the main script
+    # return gene_summary, isoform_df
 
 
 # ---------------------------------------------------------------------------
@@ -481,25 +502,42 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
     # quant_df.sort_values('REF_sum', ascending=False).to_csv(quant_path, index=False)
     # print(f"Quantification saved: {quant_path}")
 
-    # --- NEW v1.1.3: Gene & Isoform Expression Quantification ---
+    # # --- NEW v1.1.3: Gene & Isoform Expression Quantification ---
+    # # Unpack both the Gene-level and Transcript-level DataFrames
+    # gene_df, isoform_df = quantify_gene_expression(outputs, interval, extractor.gtf)
+    #
+    # # Save the Gene Summary (Grouped)
+    # cell_label = ontology.replace(':', '_')
+    # gene_csv_name = f"{gene_name}_{rsid}_{cell_label}_GENE_summary.csv"
+    # gene_path = os.path.join(output_dir, gene_csv_name)
+    # gene_df.sort_values('REF_sum', ascending=False).to_csv(gene_path, index=False)
+    #
+    # # Save the Isoform Details (Individual transcripts)
+    # iso_csv_name = f"{gene_name}_{rsid}_{cell_label}_ISOFORM_details.csv"
+    # iso_path = os.path.join(output_dir, iso_csv_name)
+    # isoform_df.sort_values('REF_sum', ascending=False).to_csv(iso_path, index=False)
+    #
+    # print(f"Quantification saved:")
+    # print(f"  → Gene level: {gene_path}")
+    # print(f"  → Isoform level: {iso_path}")
+
+    # --- NEW v1.1.5: Gene & Isoform Expression Quantification ---
     # Unpack both the Gene-level and Transcript-level DataFrames
-    gene_df, isoform_df = quantify_gene_expression(outputs, interval, extractor.gtf)
+    gene_df = quantify_gene_expression(outputs, interval, extractor.gtf)
 
-    # Save the Gene Summary (Grouped)
+    # # Save the Gene Summary (Grouped)
+    # cell_label = ontology.replace(':', '_')
+    # gene_csv_name = f"{gene_name}_{rsid}_{cell_label}_GENE_summary.csv"
+    # gene_path = os.path.join(output_dir, gene_csv_name)
+    # gene_df.sort_values('REF_sum', ascending=False).to_csv(gene_path, index=False)
+
+    # Save only the single summary CSV
     cell_label = ontology.replace(':', '_')
-    gene_csv_name = f"{gene_name}_{rsid}_{cell_label}_GENE_summary.csv"
-    gene_path = os.path.join(output_dir, gene_csv_name)
-    gene_df.sort_values('REF_sum', ascending=False).to_csv(gene_path, index=False)
-
-    # Save the Isoform Details (Individual transcripts)
-    iso_csv_name = f"{gene_name}_{rsid}_{cell_label}_ISOFORM_details.csv"
-    iso_path = os.path.join(output_dir, iso_csv_name)
-    isoform_df.sort_values('REF_sum', ascending=False).to_csv(iso_path, index=False)
+    csv_path = os.path.join(output_dir, f"{gene_name}_{rsid}_{cell_label}_summary.csv")
+    gene_df.to_csv(csv_path, index=False)
 
     print(f"Quantification saved:")
-    print(f"  → Gene level: {gene_path}")
-    print(f"  → Isoform level: {iso_path}")
-
+    print(f"  → Gene level: {csv_path}")
 
     # # NOTE : modify the run_variant function.
     # # Currently, your script assumes every data type (RNA, ATAC, ChIP) is always available,
@@ -608,7 +646,8 @@ def run_variant(variant, gene_name, rsid, model, extractor, ontology,
     plt.close()
     print(f"Saved: {save_path}")
 
-    return save_path, summary_lines, gene_df, isoform_df  # v1.1.3 -- Add gene_df and isoform_df here
+    # return save_path, summary_lines, gene_df, isoform_df  # v1.1.3 -- Add gene_df and isoform_df here
+    return save_path, summary_lines, gene_df  # v1.1.5
 
 
 # ---------------------------------------------------------------------------
@@ -716,7 +755,9 @@ def main():
 
             # # v1.1.3
             # Unpack all 4 returned objects
-            out_path, summary_lines, gene_df, isoform_df = run_variant(
+            # out_path, summary_lines, gene_df, isoform_df = run_variant(
+            # # v1.1.5
+            out_path, summary_lines, gene_df = run_variant(
                 variant=variant,
                 gene_name=gene_name,
                 rsid=rsid,

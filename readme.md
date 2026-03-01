@@ -46,9 +46,9 @@ python ./PATH_to_code/alphagenome_variant_pipeline.py \
 
 Code Running:
 ```
-Output directory : ./alphagenome/figures
-Run timestamp    : 2026-02-22 17:19:45
-Loaded 4 variant(s) from variants_input.csv
+Output directory : ./alphagenome
+Run timestamp    : 2026-02-28 18:29:06
+Loaded 4 variant(s) from /dfs7/swaruplab/zechuas/Collaborations/alphagenome/Test/autopiepline/variants_input.csv
 
 Initializing AlphaGenome model...
 Loading GTF annotation (this may take a moment on first run)...
@@ -63,7 +63,9 @@ Processing: TBK1 | rs149000064 | chr12:64488488:GAATT>G
 ────────────────────────────────────────────────────────────
   RNA-seq (+) total                1 track(s)   EFO:0001187 total RNA-seq
   RNA-seq (-) total                1 track(s)   EFO:0001187 total RNA-seq
-  RNA-seq (-) poly-A               1 track(s)   EFO:0001187 polyA plus RNA-seq
+  RNA-seq poly-A                   3 track(s)   EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq
+    → 3 identical tracks found — averaging as true replicates
+    → Track: EFO:0001187 polyA plus RNA-seq
   ATAC                             1 track(s)   EFO:0001187 ATAC-seq
   CHIP-TF (CTCF)                   2 track(s)   EFO:0001187 TF ChIP-seq CTCF, EFO:0001187 TF ChIP-seq CTCF genetically modified (insertion) using CRISPR targeting H. sapiens CTCF
     [WARNING] 2 different tracks found — selecting wildtype/unmodified:
@@ -73,7 +75,9 @@ Processing: TBK1 | rs149000064 | chr12:64488488:GAATT>G
   CHIP-Histone (H3K27ac)           1 track(s)   EFO:0001187 Histone ChIP-seq H3K27ac
 ────────────────────────────────────────────────────────────
 
-Saved: ./alphagenome/figures/TBK1_rs149000064_EFO_0001187_variant_effect.png
+Quantification saved:
+  → Gene level: ./alphagenome/TBK1_rs149000064_EFO_0001187_summary.csv
+Saved: ./alphagenome/TBK1_rs149000064_EFO_0001187_variant_effect.png
 
 ============================================================
 Processing: TP53 | rs28934578 | chr17:7674220:G>A
@@ -84,7 +88,9 @@ Processing: TP53 | rs28934578 | chr17:7674220:G>A
 ────────────────────────────────────────────────────────────
   RNA-seq (+) total                1 track(s)   EFO:0001187 total RNA-seq
   RNA-seq (-) total                1 track(s)   EFO:0001187 total RNA-seq
-  RNA-seq (-) poly-A               1 track(s)   EFO:0001187 polyA plus RNA-seq
+  RNA-seq poly-A                   3 track(s)   EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq
+    → 3 identical tracks found — averaging as true replicates
+    → Track: EFO:0001187 polyA plus RNA-seq
   ATAC                             1 track(s)   EFO:0001187 ATAC-seq
   CHIP-TF (CTCF)                   2 track(s)   EFO:0001187 TF ChIP-seq CTCF, EFO:0001187 TF ChIP-seq CTCF genetically modified (insertion) using CRISPR targeting H. sapiens CTCF
     [WARNING] 2 different tracks found — selecting wildtype/unmodified:
@@ -94,7 +100,9 @@ Processing: TP53 | rs28934578 | chr17:7674220:G>A
   CHIP-Histone (H3K27ac)           1 track(s)   EFO:0001187 Histone ChIP-seq H3K27ac
 ────────────────────────────────────────────────────────────
 
-Saved: ./alphagenome/figures/TP53_rs28934578_EFO_0001187_variant_effect.png
+Quantification saved:
+  → Gene level: ./alphagenome/TP53_rs28934578_EFO_0001187_summary.csv
+Saved: ./alphagenome/TP53_rs28934578_EFO_0001187_variant_effect.png
 
 ============================================================
 Processing: BRCA1 | rs80357713 | chr17:43071077:A>T
@@ -105,7 +113,9 @@ Processing: BRCA1 | rs80357713 | chr17:43071077:A>T
 ────────────────────────────────────────────────────────────
   RNA-seq (+) total                1 track(s)   EFO:0001187 total RNA-seq
   RNA-seq (-) total                1 track(s)   EFO:0001187 total RNA-seq
-  RNA-seq (-) poly-A               1 track(s)   EFO:0001187 polyA plus RNA-seq
+  RNA-seq poly-A                   3 track(s)   EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq
+    → 3 identical tracks found — averaging as true replicates
+    → Track: EFO:0001187 polyA plus RNA-seq
   ATAC                             1 track(s)   EFO:0001187 ATAC-seq
   CHIP-TF (CTCF)                   2 track(s)   EFO:0001187 TF ChIP-seq CTCF, EFO:0001187 TF ChIP-seq CTCF genetically modified (insertion) using CRISPR targeting H. sapiens CTCF
     [WARNING] 2 different tracks found — selecting wildtype/unmodified:
@@ -115,7 +125,9 @@ Processing: BRCA1 | rs80357713 | chr17:43071077:A>T
   CHIP-Histone (H3K27ac)           1 track(s)   EFO:0001187 Histone ChIP-seq H3K27ac
 ────────────────────────────────────────────────────────────
 
-Saved: ./alphagenome/figures/BRCA1_rs80357713_EFO_0001187_variant_effect.png
+Quantification saved:
+  → Gene level: ./alphagenome/BRCA1_rs80357713_EFO_0001187_summary.csv
+Saved: ./alphagenome/BRCA1_rs80357713_EFO_0001187_variant_effect.png
 
 ============================================================
 Processing: APOE | rs429358 | chr19:44908684:T>C
@@ -126,7 +138,9 @@ Processing: APOE | rs429358 | chr19:44908684:T>C
 ────────────────────────────────────────────────────────────
   RNA-seq (+) total                1 track(s)   EFO:0001187 total RNA-seq
   RNA-seq (-) total                1 track(s)   EFO:0001187 total RNA-seq
-  RNA-seq (-) poly-A               1 track(s)   EFO:0001187 polyA plus RNA-seq
+  RNA-seq poly-A                   3 track(s)   EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq, EFO:0001187 polyA plus RNA-seq
+    → 3 identical tracks found — averaging as true replicates
+    → Track: EFO:0001187 polyA plus RNA-seq
   ATAC                             1 track(s)   EFO:0001187 ATAC-seq
   CHIP-TF (CTCF)                   2 track(s)   EFO:0001187 TF ChIP-seq CTCF, EFO:0001187 TF ChIP-seq CTCF genetically modified (insertion) using CRISPR targeting H. sapiens CTCF
     [WARNING] 2 different tracks found — selecting wildtype/unmodified:
@@ -136,17 +150,19 @@ Processing: APOE | rs429358 | chr19:44908684:T>C
   CHIP-Histone (H3K27ac)           1 track(s)   EFO:0001187 Histone ChIP-seq H3K27ac
 ────────────────────────────────────────────────────────────
 
-Saved: ./alphagenome/figures/APOE_rs429358_EFO_0001187_variant_effect.png
+Quantification saved:
+  → Gene level: ./alphagenome/APOE_rs429358_EFO_0001187_summary.csv
+Saved: ./alphagenome/APOE_rs429358_EFO_0001187_variant_effect.png
 
-Track summary saved : ./alphagenome/figures/track_summary_20260222_171945.txt
+Track summary saved : ./alphagenome/track_summary_20260228_182906.txt
 
 ============================================================
-PIPELINE COMPLETE  [2026-02-22 17:19:45]
+PIPELINE COMPLETE  [2026-02-28 18:29:06]
   Success       : 4
   Errors        : 0
-  Figures       : ./alphagenome/figures
-  Track summary : ./alphagenome/figures/track_summary_20260222_171945.txt
-  Run summary   : ./alphagenome/figures/pipeline_summary_20260222_171945.csv
+  Figures       : ./alphagenome
+  Track summary : ./alphagenome/track_summary_20260228_182906.txt
+  Run summary   : ./alphagenome/pipeline_summary_20260228_182906.csv
 
 ```
 
@@ -157,7 +173,7 @@ PIPELINE COMPLETE  [2026-02-22 17:19:45]
 | `--csv` | ✅ | — | Path to input CSV file |
 | `--output_dir` | ✅ | — | Directory to save output figures |
 | `--api_key` | ✅ | — | Your AlphaGenome API key |
-| `--ontology` | ❌ | `EFO:0001187` | Cell type ontology term (default: HepG2/Liver) |
+| `--ontology` | ✅  | `EFO:0001187` | Cell type ontology term (default: HepG2/Liver) |
 | `--interval_size` | ❌ | `1048576` | Model input context window in bp (1 Mb). The model needs this large window for accurate predictions — only change if you have a specific reason |
 | `--zoom` | ❌ | `32768` | Region displayed in the output figure in bp (32 kb). Does not affect prediction accuracy |
 
