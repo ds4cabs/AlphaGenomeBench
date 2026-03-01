@@ -1,0 +1,616 @@
+============================================================
+AlphaGenome Variant Pipeline — Track Summary
+============================================================
+Run timestamp    : 2026-02-28 20:57:23
+Input CSV        : F:\AlphaGenome\Pilot_RNAseq_testdata_Clingen_Pathogenic_for_AG_Input.csv
+Output directory : F:\AlphaGenome\figures
+Ontology         : UBERON:0001134
+Aggregate RNA    : False  (mean expression vs genomic curves)
+Interval size    : 1,048,576 bp  (model input context window)
+Zoom             : 32,768 bp  (display window in figures)
+Total variants   : 37
+============================================================
+
+============================================================
+  Variant : AARS1 | rs758183257 | chr16:70268354:G>A
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0109  ALT=0.0108
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=5.5047  ALT=5.4719
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : ACTA1 | rs2102735278 | chr1:229431870:A>G
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.1711  ALT=0.1718
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=24.2083  ALT=24.1105
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : CACNA1C | rs797044881 | chr12:2608651:T>C
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.0178  ALT=2.0213
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.0046  ALT=1.0060
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0017  ALT=0.0017
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0773  ALT=0.0771
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : CAPN3 | rs2052593499 | chr15:42359903:AG>A
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.3216  ALT=0.3171
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0011  ALT=0.0012
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : CDH1 | rs2152113974 | chr16:68737445:GC>G
+  Ontology: UBERON:0008367
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0008367 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.1719  ALT=2.1250
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0008367 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0014  ALT=0.0014
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             1 track(s)   UBERON:0008367 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0008367 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0008367 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : COL6A1 | rs1603589162 | chr21:45981900:C>CAGCCGCGCAGGATG
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=6.9674  ALT=6.7160
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0107  ALT=0.0095
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : COL6A2 | rs1568928804 | chr21:46115909:G>A
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=5.9780  ALT=5.9792
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0093  ALT=0.0095
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : COL6A3 | rs2469819229 | chr2:237345211:AC>A
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0251  ALT=0.0223
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=5.4340  ALT=5.4606
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : FLNC | rs2128932126 | chr7:128830739:G>A
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=27.8686  ALT=27.9669
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=10.4887  ALT=10.4801
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0168  ALT=0.0170
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.9690  ALT=1.9496
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : GATA2 | rs1576745322 | chr3:128481946:T>C
+  Ontology: UBERON:0000178
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : HBB | rs33949869 | chr11:5225606:A>T
+  Ontology: UBERON:0002371
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : HBB | rs334 | chr11:5227002:T>A
+  Ontology: UBERON:0002371
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : HBB | rs334 | chr11:5227002:T>A
+  Ontology: CL:0000765
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : LMNA | rs1558115754 | chr1:156114922:G>T
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=18.5625  ALT=18.4375
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=5.3125  ALT=5.3281
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0037  ALT=0.0035
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.5605  ALT=0.5742
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : MYBPC3 | rs2495736462 | chr11:47332196:GA>G
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.3934  ALT=0.3800
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=5.4656  ALT=5.3142
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=28.7723  ALT=27.9275
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=31.7955  ALT=30.8045
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : NF1 | rs1060500320 | chr17:31156018:CA>C
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.0078  ALT=1.0137
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0014  ALT=0.0012
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : PIK3CA | rs1724507777 | chr3:179204575:T>C
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8649  ALT=0.8685
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0049  ALT=0.0049
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : PTEN | rs2493592313 | chr10:87864522:AGGAT>A
+  Ontology: UBERON:0008367
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0008367 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.7524  ALT=2.7837
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0008367 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0205  ALT=0.0207
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             1 track(s)   UBERON:0008367 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0008367 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0008367 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : RB1 | rs1555279195 | chr13:48303914:T>TGCCGCCCAAAACCCCCCGAAAAACGGCCGCCACC
+  Ontology: UBERON:0000970
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : RYR1 | rs797045931 | chr19:38457579:TGCCTG>T
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.7843  ALT=2.7686
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0051  ALT=0.0049
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : RYR2 | rs121918602 | chr1:237454396:T>C
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=17.6500  ALT=17.6000
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=6.0375  ALT=6.0250
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0676  ALT=0.0667
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.5961  ALT=0.5945
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : SLC2A1 | rs2124449417 | chr1:42929994:C>T
+  Ontology: UBERON:0002108
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0733  ALT=0.0722
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.7613  ALT=2.7491
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002108 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : SMAD4 | rs1555685156 | chr18:51048710:CAT>C
+  Ontology: UBERON:0002108
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.1468  ALT=1.1825
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0446  ALT=0.0458
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002108 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : STK11 | rs2512921207 | chr19:1207070:G>GA
+  Ontology: UBERON:0002108
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=3.7070  ALT=3.5762
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002108 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.2885  ALT=0.2708
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002108 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : TP53 | rs1555524354 | chr17:7670625:TC>T
+  Ontology: UBERON:0002048
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002048 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0203  ALT=0.0203
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002048 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0793  ALT=0.0798
+  RNA-seq (-) total                1 track(s)   UBERON:0002048 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.4661  ALT=0.4627
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002048 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8375  ALT=0.8344
+  ATAC                             1 track(s)   UBERON:0002048 ATAC-seq
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002048 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : TRIP12 | rs2472430261 | chr2:229811036:G>A
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0009  ALT=0.0009
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=2.6406  ALT=2.6350
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : TRPV4 | rs515726153 | chr12:109796638:T>C
+  Ontology: UBERON:0001134
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0003  ALT=0.0003
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001134 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0238  ALT=0.0238
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001134 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : TSC1 | rs118203728 | chr9:132897544:G>A
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.1603  ALT=0.1604
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.7893  ALT=0.7859
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : TTN | rs72648222 | chr2:178561313:C>T
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8110  ALT=0.8113
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8407  ALT=0.8422
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=79.0000  ALT=79.0455
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=16.6619  ALT=16.6449
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : VHL | rs5030820 | chr3:10149822:C>G
+  Ontology: UBERON:0002113
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002113 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.4355  ALT=1.4160
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002113 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.6389  ALT=1.6228
+  RNA-seq (-) total                1 track(s)   UBERON:0002113 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0012  ALT=0.0012
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002113 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0007  ALT=0.0007
+  ATAC                             1 track(s)   UBERON:0002113 ATAC-seq
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002113 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : WDR26 | rs1572163072 | chr1:224398195:ACT>A
+  Ontology: UBERON:0000955
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0075  ALT=0.0073
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0000955 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=4.0059  ALT=3.9883
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0000955 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : WT1 | rs1590326226 | chr11:32389128:C>T
+  Ontology: UBERON:0002113
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002113 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0010  ALT=0.0010
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002113 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0021  ALT=0.0021
+  RNA-seq (-) total                1 track(s)   UBERON:0002113 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.6453  ALT=0.6383
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002113 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.7219  ALT=1.6781
+  ATAC                             1 track(s)   UBERON:0002113 ATAC-seq
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002113 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : APOL4 | rs9610445 | chr22:36201698:A>C
+  Ontology: UBERON:0001157
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001157 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0001  ALT=0.0001
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001157 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0929  ALT=0.0302
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             1 track(s)   UBERON:0001157 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0001157 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0001157 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : PMP22 | rs11654383 | chr17:15229797:A>G
+  Ontology: UBERON:0001115
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0001115 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0006  ALT=0.0006
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) total                1 track(s)   UBERON:0001115 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.9102  ALT=0.8496
+  RNA-seq (-) poly-A               0 track(s)   [no matching tracks found — skipped]
+  ATAC                             1 track(s)   UBERON:0001115 ATAC-seq
+  CHIP-TF (CTCF)                   0 track(s)   [no matching tracks found — skipped]
+  CHIP-Histone (H3K27ac)           0 track(s)   [no matching tracks found — skipped]
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : ZSWIM7 | rs1045599 | chr17:15976596:C>T
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0208  ALT=0.0205
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.1028  ALT=0.1026
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.6082  ALT=0.6541
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.2413  ALT=1.2637
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : APOA1 | rs | chr11:116837649:T>G
+  Ontology: UBERON:0002084
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0032  ALT=0.0028
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.0446  ALT=0.0147
+  RNA-seq (-) total                1 track(s)   UBERON:0002084 total RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=1.0997  ALT=0.3990
+  RNA-seq (-) poly-A               1 track(s)   UBERON:0002084 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8033  ALT=0.2656
+  ATAC                             1 track(s)   UBERON:0002084 ATAC-seq
+  CHIP-TF (CTCF)                   1 track(s)   UBERON:0002084 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   UBERON:0002084 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
+
+============================================================
+  Variant : HBA2 | rs63750067 | chr16:173692:A>G
+  Ontology: CL:0001054
+────────────────────────────────────────────────────────────
+  RNA-seq (+) total                0 track(s)   [no matching tracks found — skipped]
+  GTEx polyA (+)                   0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (+) poly-A               1 track(s)   CL:0001054 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.8784  ALT=0.5589
+  RNA-seq (-) total                0 track(s)   [no matching tracks found — skipped]
+  RNA-seq (-) poly-A               1 track(s)   CL:0001054 polyA plus RNA-seq
+    → Aggregated expression (mean of exon peaks in plot window): REF=0.2033  ALT=0.2026
+  ATAC                             0 track(s)   [no matching tracks found — skipped]
+  CHIP-TF (CTCF)                   1 track(s)   CL:0001054 TF ChIP-seq CTCF
+  CHIP-Histone (H3K27ac)           1 track(s)   CL:0001054 Histone ChIP-seq H3K27ac
+────────────────────────────────────────────────────────────
