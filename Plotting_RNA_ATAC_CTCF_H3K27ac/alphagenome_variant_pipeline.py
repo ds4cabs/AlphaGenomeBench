@@ -398,6 +398,7 @@ def quantify_gene_expression(outputs, interval, gtf_mane):
             'gene_name': entry['gene_name'],
             'transcript_id': entry.get('transcript_id', 'N/A'), # Keep transcript_id info
             'gene_type': entry['gene_type'],
+            'chr': entry['Chromosome'],  # Make sure this is captured here!
             'Start': entry['Start'],
             'End': entry['End'],
             'REF_sum': round(float(ref_sum), 2),
@@ -418,6 +419,7 @@ def quantify_gene_expression(outputs, interval, gtf_mane):
     # We aggregate to keep all your requested columns
     gene_summary = isoform_df.groupby(['gene_name', 'gene_type']).agg({
         'transcript_id': 'first', # Keeps the primary transcript ID
+        'chr': 'first',           # Add this to keep the chromosome info
         'Start': 'min',           # Smallest start site
         'End': 'max',             # Largest end site
         'REF_sum': 'sum',         # Total signal
